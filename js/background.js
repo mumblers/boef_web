@@ -37,11 +37,9 @@ function renderBackground(bitmap, state){
                 level.scale, level.scale, Math.radians(ding.ori), 0.5, 0.5)
         }
     });
-    console.log(level);
 }
 
 function getParts(roads, tile){
-    console.log(roads);
     var l = roads[Math.max(0, tile.x-1)][tile.y];
     var r = roads[Math.min(level.width-1, tile.x+1)][tile.y];
     var t = roads[tile.x][Math.max(0, tile.y-1)];

@@ -13,8 +13,6 @@ function renderCams(poles, cams, goals){
         }
     });
 
-    console.log(level);
-
     //alle plekken aan de zijkand van het scherm een goal toevoegen op wegen.
     level.tileset.forEach(function(object) {
         if (object.type === "street") {
