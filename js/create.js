@@ -20,7 +20,7 @@ function create () {
     this.game.add.image(0, 0, this.bitmap);
 
     // Build some walls. These will block line of sight.
-    var NUMBER_OF_WALLS = 4;
+    var NUMBER_OF_WALLS = 0;
     this.walls = this.game.add.group();
     var i, x, y;
     for(i = 0; i < NUMBER_OF_WALLS; i++) {

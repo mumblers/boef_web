@@ -8,6 +8,17 @@
     <script>
         var game;
         var level;
+
+        var SCALE = 128;
+
+        Math.radians = function(degrees) {
+            return degrees * Math.PI / 180;
+        };
+
+        // Converts from radians to degrees.
+        Math.degrees = function(radians) {
+            return radians * 180 / Math.PI;
+        };
     </script>
 
     <script src="js/create.js"></script>
