@@ -4,7 +4,7 @@ var imgs = ['block', 'boef', 'camera_directional', 'camera_pole_directional', 'c
 
 function loadLevel(){
     var request = new XMLHttpRequest();
-    request.open('GET', 'http://dohdatasciencevm6.westeurope.cloudapp.azure.com:8080/maps/Oceans11', false);
+    request.open('GET', 'http://dohdatasciencevm6.westeurope.cloudapp.azure.com/api/maps/Oceans11', false);
     request.send(null);
 
     if (request.status === 200)
