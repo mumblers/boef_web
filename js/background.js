@@ -1,12 +1,6 @@
 function renderBackground(bitmap){
-    var w = level.width / SCALE;
-    var h = level.height / SCALE;
-
-    level.tileset = level.tileset.map(function(tile) {
-        tile.gridX = tile.x / SCALE;
-        tile.gridY = tile.y / SCALE;
-        return tile;
-    });
+    var w = level.width;
+    var h = level.height;
 
     var roads = new Array(w);
     for(var x = 0; x < w; x++){
@@ -18,16 +12,18 @@ function renderBackground(bitmap){
 
     level.tileset.forEach(function(tile){
         if(tile.type === "street"){
-            roads[tile.gridX][tile.gridY] = tile;
+            roads[tile.x][tile.y] = tile;
         }
     });
 
     level.tileset.forEach(function(tile){
         if(tile.type === "house"){
-            bitmap.copy("house_red", 0, 0, SCALE, SCALE, tile.x+SCALE/2, tile.y+SCALE/2, SCALE, SCALE, Math.radians(tile.rotation), 0.5, 0.5)
+            bitmap.copy("house_red", 0, 0, level.scale, level.scale, (tile.x+0.5)*level.scale, (tile.y+0.5)*level.scale,
+                level.scale, level.scale, Math.radians(tile.rotation), 0.5, 0.5)
         }else if(tile.type === "street"){
             var ding = getParts(roads, tile);
-            bitmap.copy(ding.typ, 0, 0, SCALE, SCALE, tile.x+SCALE/2, tile.y+SCALE/2, SCALE, SCALE, Math.radians(ding.ori), 0.5, 0.5)
+            bitmap.copy(ding.typ, 0, 0, level.scale, level.scale, (tile.x+0.5)*level.scale, (tile.y+0.5)*level.scale,
+                level.scale, level.scale, Math.radians(ding.ori), 0.5, 0.5)
         }
     });
     console.log(level);
@@ -35,10 +31,10 @@ function renderBackground(bitmap){
 
 function getParts(roads, tile){
     console.log(roads);
-    var l = roads[Math.max(0, tile.gridX-1)][tile.gridY];
-    var r = roads[Math.min(level.width/SCALE-1, tile.gridX+1)][tile.gridY];
-    var t = roads[tile.gridX][Math.max(0, tile.gridY-1)];
-    var b = roads[tile.gridX][Math.min(level.width/SCALE-1, tile.gridY+1)];
+    var l = roads[Math.max(0, tile.x-1)][tile.y];
+    var r = roads[Math.min(level.width-1, tile.x+1)][tile.y];
+    var t = roads[tile.x][Math.max(0, tile.y-1)];
+    var b = roads[tile.x][Math.min(level.width-1, tile.y+1)];
 
     var i = 0;
     if(l != null) i++;
