@@ -1,3 +1,3 @@
 function renderBackground(){
-    console.log("asdf")
+    console.log(level)
 }
