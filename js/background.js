@@ -24,7 +24,7 @@ function renderBackground(bitmap){
 
     level.tileset.forEach(function(tile){
         if(tile.type === "house"){
-            bitmap.copy("house_red", 0, 0, null, null, tile.x, tile.y, null, null, Math.radians(tile.rotation))
+            bitmap.copy("house_red", 0, 0, SCALE, SCALE, tile.x+SCALE/2, tile.y+SCALE/2, SCALE, SCALE, Math.radians(tile.rotation), 0.5, 0.5)
         }else if(tile.type === "street"){
             var ding = getParts(roads, tile);
             bitmap.copy(ding.typ, 0, 0, SCALE, SCALE, tile.x+SCALE/2, tile.y+SCALE/2, SCALE, SCALE, Math.radians(ding.ori), 0.5, 0.5)
