@@ -16,7 +16,7 @@ function create () {
 
     // Create a bitmap texture for drawing lines
     this.bitmap = this.game.add.bitmapData(this.world.width, this.world.height);
-    renderBackground(this.bitmap);
+    renderBackground(this.bitmap, this);
     this.game.add.image(0, 0, this.bitmap);
 
     this.cams = this.game.add.group();
