@@ -10,7 +10,7 @@ function update() {
         // Test if any walls intersect the ray
         var intersect = getWallIntersection(this, ray);
 
-        if (intersect.coll || ray.length > 500) {
+        if (intersect || ray.length > 500) {
             // A wall is blocking this persons vision so change them back to their default color
             cam.tint = 0xffffff;
         } else {
@@ -106,5 +106,5 @@ function getWallIntersection(gameState, ray) {
         }
     }, gameState);
 
-    return {coll: closestIntersection, d: distanceToWall};
+    return closestIntersection;
 }
