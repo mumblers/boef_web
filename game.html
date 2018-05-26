@@ -4,216 +4,22 @@
     <meta charset="UTF-8" />
     <title>Bad guy run</title>
     <script src="//cdn.jsdelivr.net/phaser/2.6.2/phaser.min.js"></script>
+
+    <script>
+        var game;
+    </script>
+
+    <script src="js/create.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/update.js"></script>
+    <script src="js/background.js"></script>
 </head>
 <body style="margin: 0">
 
 <script type="text/javascript">
-
     window.onload = function() {
-
-        var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '',
+        game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '',
             { preload: preload, create: create, update : update});
-
-        function preload () {
-
-            this.load.image('logo', 'resources/images/road_crossing.png');
-            this.load.image('block', 'resources/images/block.png');
-            this.load.image('person', 'resources/images/boef.png');
-            this.load.image('ball', 'resources/images/politie.png');
-
-        }
-
-        function create () {
-
-            this.world.setBounds(0, 0, 2000, 2000);
-
-            //part 1 dragging logo
-            var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
-            logo.anchor.setTo(0.5, 0.5);
-
-            logo.inputEnabled = true;
-            logo.input.enableDrag();
-
-            //part 2 add raycast
-
-            // Set stage background color
-            this.game.stage.backgroundColor = 0x4488cc;
-
-            // Create a bitmap texture for drawing lines
-
-            // Build some walls. These will block line of sight.
-            var NUMBER_OF_WALLS = 4;
-            this.walls = this.game.add.group();
-            var i, x, y;
-            for(i = 0; i < NUMBER_OF_WALLS; i++) {
-                x = i * this.game.width/NUMBER_OF_WALLS + 50;
-                y = this.game.rnd.integerInRange(50, this.game.height - 200);
-                this.game.add.image(x, y, 'block', 0, this.walls).scale.setTo(3, 3);
-            }
-
-            // Place some people in random locations
-            var NUMBER_OF_PEOPLE = 6;
-            this.people = this.game.add.group();
-            for(i = 0; i < NUMBER_OF_PEOPLE; i++) {
-                // Choose a random location on the screen
-                x = this.game.rnd.integerInRange(32, this.game.width - 32);
-                y = this.game.rnd.integerInRange(32, this.game.height - 32);
-
-                // Create a person
-                var person = this.game.add.sprite(x, y, 'person');
-
-                // Set the pivot point of the person to the center of the texture
-                person.anchor.setTo(0.5, 0.5);
-
-                // Add the person to the people group
-                this.people.add(person);
-            }
-
-            // Add the ball
-            this.ball = this.game.add.sprite(this.game.width/2, this.game.height/2, 'ball');
-
-            // Set the pivot point of the ball to the center of the texture
-            this.ball.anchor.setTo(0.5, 0.5);
-
-            // Simulate a pointer click/tap input at the center of the stage
-            // when the example begins running.
-            // this.game.input.activePointer.x = this.game.width/2;
-            // this.game.input.activePointer.y = this.game.height/2;
-
-
-            //part 3 basic walking
-            // Define movement constants
-            this.MAX_SPEED = 500; // pixels/second
-
-
-            this.game.physics.enable(this.ball, Phaser.Physics.ARCADE);
-            this.ball.body.collideWorldBounds = true;
-
-            this.game.input.keyboard.addKeyCapture([
-                Phaser.Keyboard.LEFT,
-                Phaser.Keyboard.RIGHT,
-                Phaser.Keyboard.UP,
-                Phaser.Keyboard.DOWN
-            ]);
-
-            this.camera.follow(this.ball, Phaser.Camera.FOLLOW_TOPDOWN_TIGHT);
-            // this.camera.deadzone = new Phaser.Rectangle(50, 50, 50, 50);
-            this.camera.focusOnXY(0, 0);
-
-            game.input.addPointer();
-        }
-
-
-        function update() {
-            // Separate any people overlapping walls.
-            // This isn't necessary for the algorithm but it looks nicer.
-            this.walls.forEach(function(wall) {
-                this.people.forEach(function(person) {
-                    if (person.overlap(wall)) {
-                        if (wall.width > wall.height) {
-                            person.y += 64;
-                        } else {
-                            person.x += 64;
-                        }
-                    }
-                }, this);
-            }, this);
-
-            // Move the ball to the pointer/touch location
-            // part 3 ignore this
-
-            // Clear the bitmap where we are drawing our lines
-            // this.bitmap.context.clearRect(0, 0, this.world.width, this.world.height);
-
-            // Ray casting!
-            // Test if each person can see the ball by casting a ray (a line) towards the ball.
-            // If the ray intersects any walls before it intersects the ball then the wall
-            // is in the way.
-            this.people.forEach(function(person) {
-                // Define a line that connects the person to the ball
-                // This isn't drawn on screen. This is just mathematical representation
-                // of a line to make our calculations easier. Unless you want to do a lot
-                // of math, make sure you choose an engine that has things like line intersection
-                // tests built in, like Phaser does.
-                var ray = new Phaser.Line(person.x, person.y, this.ball.x, this.ball.y);
-
-                // Test if any walls intersect the ray
-                var intersect = getWallIntersection(this, ray);
-
-                if (intersect) {
-                    // A wall is blocking this persons vision so change them back to their default color
-                    person.tint = 0xffffff;
-                } else {
-                    // This person can see the ball so change their color
-                    person.tint = 0xffaaaa;
-                }
-            }, this);
-
-
-            if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-                this.ball.body.velocity.x = -this.MAX_SPEED;
-            } else if (this.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-                this.ball.body.velocity.x = this.MAX_SPEED;
-            } else {
-                this.ball.body.velocity.x = 0;
-            }
-
-            if (this.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-                this.ball.body.velocity.y = -this.MAX_SPEED;
-            } else if (this.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-                this.ball.body.velocity.y = this.MAX_SPEED;
-            } else {
-                this.ball.body.velocity.y = 0;
-            }
-
-            if (game.input.mousePointer.isDown) {
-                //  400 is the speed it will move towards the mouse
-                game.physics.arcade.moveToPointer(this.ball, 400);
-
-                //  if it's overlapping the mouse, don't move any more
-                if (Phaser.Rectangle.contains(this.ball.body, game.input.x, game.input.y)) {
-                    this.ball.body.velocity.setTo(0, 0);
-                }
-            } else {
-                this.ball.body.velocity.setTo(0, 0);
-            }
-        }
-
-        function getWallIntersection(gameState, ray) {
-            var distanceToWall = Number.POSITIVE_INFINITY;
-            var closestIntersection = null;
-
-            // For each of the walls...
-            gameState.walls.forEach(function(wall) {
-                // Create an array of lines that represent the four edges of each wall
-                var lines = [
-                    new Phaser.Line(wall.x, wall.y, wall.x + wall.width, wall.y),
-                    new Phaser.Line(wall.x, wall.y, wall.x, wall.y + wall.height),
-                    new Phaser.Line(wall.x + wall.width, wall.y,
-                        wall.x + wall.width, wall.y + wall.height),
-                    new Phaser.Line(wall.x, wall.y + wall.height,
-                        wall.x + wall.width, wall.y + wall.height)
-                ];
-
-                // Test each of the edges in this wall against the ray.
-                // If the ray intersects any of the edges then the wall must be in the way.
-                for(var i = 0; i < lines.length; i++) {
-                    var intersect = Phaser.Line.intersects(ray, lines[i]);
-                    if (intersect) {
-                        // Find the closest intersection
-                        distance =
-                            gameState.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
-                        if (distance < distanceToWall) {
-                            distanceToWall = distance;
-                            closestIntersection = intersect;
-                        }
-                    }
-                }
-            }, gameState);
-
-            return closestIntersection;
-        }
-
     };
 </script>
 

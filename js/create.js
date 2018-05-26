@@ -1,0 +1,82 @@
+function create () {
+
+    this.world.setBounds(0, 0, 2000, 2000);
+
+    //part 1 dragging logo
+    var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
+    logo.anchor.setTo(0.5, 0.5);
+
+    logo.inputEnabled = true;
+    logo.input.enableDrag();
+
+    //part 2 add raycast
+
+    // Set stage background color
+    this.game.stage.backgroundColor = 0x4488cc;
+
+    // Create a bitmap texture for drawing lines
+    this.bitmap = this.game.add.bitmapData(this.world.width, this.world.height);
+    renderBackground(this.bitmap);
+    this.game.add.image(0, 0, this.bitmap);
+
+    // Build some walls. These will block line of sight.
+    var NUMBER_OF_WALLS = 4;
+    this.walls = this.game.add.group();
+    var i, x, y;
+    for(i = 0; i < NUMBER_OF_WALLS; i++) {
+        x = i * this.game.width/NUMBER_OF_WALLS + 50;
+        y = this.game.rnd.integerInRange(50, this.game.height - 200);
+        this.game.add.image(x, y, 'block', 0, this.walls).scale.setTo(3, 3);
+    }
+
+    // Place some people in random locations
+    var NUMBER_OF_PEOPLE = 6;
+    this.people = this.game.add.group();
+    for(i = 0; i < NUMBER_OF_PEOPLE; i++) {
+        // Choose a random location on the screen
+        x = this.game.rnd.integerInRange(32, this.game.width - 32);
+        y = this.game.rnd.integerInRange(32, this.game.height - 32);
+
+        // Create a person
+        var person = this.game.add.sprite(x, y, 'person');
+
+        // Set the pivot point of the person to the center of the texture
+        person.anchor.setTo(0.5, 0.5);
+
+        // Add the person to the people group
+        this.people.add(person);
+    }
+
+    // Add the ball
+    this.ball = this.game.add.sprite(this.game.width/2, this.game.height/2, 'ball');
+
+    // Set the pivot point of the ball to the center of the texture
+    this.ball.anchor.setTo(0.5, 0.5);
+
+    // Simulate a pointer click/tap input at the center of the stage
+    // when the example begins running.
+    // this.game.input.activePointer.x = this.game.width/2;
+    // this.game.input.activePointer.y = this.game.height/2;
+
+
+    //part 3 basic walking
+    // Define movement constants
+    this.MAX_SPEED = 500; // pixels/second
+
+
+    this.game.physics.enable(this.ball, Phaser.Physics.ARCADE);
+    this.ball.body.collideWorldBounds = true;
+
+    this.game.input.keyboard.addKeyCapture([
+        Phaser.Keyboard.LEFT,
+        Phaser.Keyboard.RIGHT,
+        Phaser.Keyboard.UP,
+        Phaser.Keyboard.DOWN
+    ]);
+
+    this.camera.follow(this.ball, Phaser.Camera.FOLLOW_TOPDOWN_TIGHT);
+    // this.camera.deadzone = new Phaser.Rectangle(50, 50, 50, 50);
+    this.camera.focusOnXY(0, 0);
+
+    game.input.addPointer();
+}
