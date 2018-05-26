@@ -1,5 +1,5 @@
 
-function renderBackground(bitmap){
+function renderBackground(bitmap, state){
     var w = level.width;
     var h = level.height;
 
@@ -22,7 +22,7 @@ function renderBackground(bitmap){
         if (tile.type === "house") {
             this.sprite = game.add.sprite(tile.x, tile.y, null, null, houses);
             game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
-            this.sprite.body.setSize(SCALE, SCALE);
+            this.sprite.body.setSize(level.scale, level.scale);
             this.sprite.body.immovable = true;
         }
     });
