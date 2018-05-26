@@ -48,24 +48,13 @@ function create () {
     }
 
     // Add the ball
-    this.ball = this.game.add.sprite(this.game.width/2, this.game.height/2, 'politie');
+    this.player = this.game.add.sprite(this.game.width/2, this.game.height/2, 'politie');
 
-    // Set the pivot point of the ball to the center of the texture
-    this.ball.anchor.setTo(0.5, 0.5);
+    this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
+    this.player.body.collideWorldBounds = true;
 
-    // Simulate a pointer click/tap input at the center of the stage
-    // when the example begins running.
-    // this.game.input.activePointer.x = this.game.width/2;
-    // this.game.input.activePointer.y = this.game.height/2;
-
-
-    //part 3 basic walking
     // Define movement constants
     this.MAX_SPEED = 500; // pixels/second
-
-
-    this.game.physics.enable(this.ball, Phaser.Physics.ARCADE);
-    this.ball.body.collideWorldBounds = true;
 
     this.game.input.keyboard.addKeyCapture([
         Phaser.Keyboard.LEFT,
@@ -74,7 +63,7 @@ function create () {
         Phaser.Keyboard.DOWN
     ]);
 
-    this.camera.follow(this.ball, Phaser.Camera.FOLLOW_TOPDOWN_TIGHT);
+    this.camera.follow(this.player, Phaser.Camera.FOLLOW_TOPDOWN_TIGHT);
     // this.camera.deadzone = new Phaser.Rectangle(50, 50, 50, 50);
     this.camera.focusOnXY(0, 0);
 

@@ -1,17 +1,6 @@
 function update() {
-    // Separate any people overlapping walls.
-    // This isn't necessary for the algorithm but it looks nicer.
-    this.walls.forEach(function(wall) {
-        this.people.forEach(function(person) {
-            if (person.overlap(wall)) {
-                if (wall.width > wall.height) {
-                    person.y += 64;
-                } else {
-                    person.x += 64;
-                }
-            }
-        }, this);
-    }, this);
+
+    game.physics.arcade.collide(this.player, this.houses);
 
     // Move the ball to the pointer/touch location
     // part 3 ignore this
@@ -23,13 +12,15 @@ function update() {
     // Test if each person can see the ball by casting a ray (a line) towards the ball.
     // If the ray intersects any walls before it intersects the ball then the wall
     // is in the way.
+
+    var play = this.player;
     this.people.forEach(function(person) {
         // Define a line that connects the person to the ball
         // This isn't drawn on screen. This is just mathematical representation
         // of a line to make our calculations easier. Unless you want to do a lot
         // of math, make sure you choose an engine that has things like line intersection
         // tests built in, like Phaser does.
-        var ray = new Phaser.Line(person.x, person.y, this.ball.x, this.ball.y);
+        var ray = new Phaser.Line(person.x, person.y, play.x, play.y);
 
         // Test if any walls intersect the ray
         var intersect = getWallIntersection(this, ray);
@@ -45,28 +36,28 @@ function update() {
 
 
     if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
-        this.ball.body.velocity.x = -this.MAX_SPEED;
+        this.player.body.velocity.x = -this.MAX_SPEED;
     } else if (this.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-        this.ball.body.velocity.x = this.MAX_SPEED;
+        this.player.body.velocity.x = this.MAX_SPEED;
     } else {
-        this.ball.body.velocity.x = 0;
+        this.player.body.velocity.x = 0;
     }
 
     if (this.input.keyboard.isDown(Phaser.Keyboard.UP)) {
-        this.ball.body.velocity.y = -this.MAX_SPEED;
+        this.player.body.velocity.y = -this.MAX_SPEED;
     } else if (this.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
-        this.ball.body.velocity.y = this.MAX_SPEED;
+        this.player.body.velocity.y = this.MAX_SPEED;
     } else {
-        this.ball.body.velocity.y = 0;
+        this.player.body.velocity.y = 0;
     }
 
-    if (!moveToPoint(game, game.input.activePointer, this.ball)) {
-        this.ball.body.velocity.setTo(0, 0);
+    if (!moveToPoint(game.input.activePointer, this.player)) {
+        this.player.body.velocity.setTo(0, 0);
     }
 }
 
 
-function moveToPoint(game, pointer, player) {
+function moveToPoint(pointer, player) {
     if (pointer.isDown && game.math.distance(player.x, player.y, pointer.worldX, pointer.worldY) > 20) {
         //  400 is the speed it will move towards the mouse
         game.physics.arcade.moveToPointer(player, game.MOUSE_MOVE_SPEED, pointer);
