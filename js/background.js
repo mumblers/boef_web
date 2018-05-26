@@ -56,13 +56,13 @@ function getParts(roads, tile){
     if(i === 0 || i ===4)
         return {typ: "road_crossing", ori: 0};
     if(i === 3){
-        if(t !== null)
-            return {typ: "road_crossing_t", ori: 180};
-        if(r !== null)
+        if(t === null)
+            return {typ: "road_crossing_t", ori: 0};
+        if(r === null)
             return {typ: "road_crossing_t", ori: 90};
-        if(b !== null)
+        if(b === null)
             return {typ: "road_crossing_t", ori: 180};
-        if(l !== null)
+        if(l === null)
             return {typ: "road_crossing_t", ori: 270};
     }
     if(i === 1){
