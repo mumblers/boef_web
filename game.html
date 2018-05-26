@@ -7,6 +7,7 @@
 
     <script>
         var game;
+        var level;
     </script>
 
     <script src="js/create.js"></script>
@@ -19,6 +20,8 @@
 
 <script type="text/javascript">
     window.onload = function() {
+
+        level = loadLevel();
         game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '',
             { preload: preload, create: create, update : update, render : render});
     };
