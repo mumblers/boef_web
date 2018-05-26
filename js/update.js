@@ -60,17 +60,24 @@ function update() {
         this.ball.body.velocity.y = 0;
     }
 
-    if (game.input.mousePointer.isDown) {
-        //  400 is the speed it will move towards the mouse
-        game.physics.arcade.moveToPointer(this.ball, 400);
-
-        //  if it's overlapping the mouse, don't move any more
-        if (Phaser.Rectangle.contains(this.ball.body, game.input.x, game.input.y)) {
-            this.ball.body.velocity.setTo(0, 0);
-        }
-    } else {
+    if (!moveToPoint(game, game.input.activePointer, this.ball)) {
         this.ball.body.velocity.setTo(0, 0);
     }
+}
+
+
+function moveToPoint(game, pointer, player) {
+    if (pointer.isDown && game.math.distance(player.x, player.y, pointer.worldX, pointer.worldY) > 20) {
+        //  400 is the speed it will move towards the mouse
+        game.physics.arcade.moveToPointer(player, game.MOUSE_MOVE_SPEED, pointer);
+
+        //  if it's overlapping the mouse, don't move any more
+        if (Phaser.Rectangle.contains(player.body, pointer.x, pointer.y)) {
+            player.body.velocity.setTo(0, 0);
+        }
+        return true;
+    }
+    return false;
 }
 
 function getWallIntersection(gameState, ray) {

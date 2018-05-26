@@ -79,4 +79,11 @@ function create () {
     this.camera.focusOnXY(0, 0);
 
     game.input.addPointer();
+
+    game.MOUSE_MOVE_SPEED = 250;
+
+    //used to not have to deal with multi touch and just use the last one
+    game.input.MAX_POINTERS = 1;
+
+    game.time.advancedTiming = true;
 }
