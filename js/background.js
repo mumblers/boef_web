@@ -19,7 +19,7 @@ function renderBackground(bitmap, state){
             roads[tile.x][tile.y] = tile;
         }
 
-        if (tile.type === "house") {
+        if (tile.type.startsWith("house")) {
             this.sprite = game.add.sprite(tile.x * level.scale, tile.y * level.scale, null, null, houses);
             game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
             this.sprite.body.setSize(level.scale, level.scale);

@@ -17,11 +17,6 @@ function update() {
             // This person can see the ball so change their color
             cam.tint = 0xffaaaa;
 
-            // this.bitmap.context.beginPath();
-            // this.bitmap.context.moveTo(cam.x + (cam.width / 2), cam.y + (cam.height / 2));
-            // this.bitmap.context.lineTo(play.x, play.y);
-            // this.bitmap.context.stroke();
-            // this.bitmap.dirty = true;
         }
     }, this);
 
@@ -79,7 +74,8 @@ function getWallIntersection(gameState, ray) {
     var closestIntersection = null;
 
     // For each of the walls...
-    gameState.houses.forEach(function(house) {
+    gameState.houses.forEach(function(h) {
+        var house = h.body;
         // Create an array of lines that represent the four edges of each wall
         var lines = [
             new Phaser.Line(house.x, house.y, house.x + house.width, house.y),
