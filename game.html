@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>hello phaser!</title>
+    <title>Bad guy run</title>
     <script src="//cdn.jsdelivr.net/phaser/2.6.2/phaser.min.js"></script>
 </head>
 <body style="margin: 0">
@@ -11,16 +11,12 @@
 
     window.onload = function() {
 
-        //  Note that this html file is set to pull down Phaser 2.5.0 from the JS Delivr CDN.
-        //  Although it will work fine with this tutorial, it's almost certainly not the most current version.
-        //  Be sure to replace it with an updated version before you start experimenting with adding your own code.
-
         var game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '',
-            { preload: preload, create: create, update : update, getWallIntersection : getWallIntersection });
+            { preload: preload, create: create, update : update});
 
         function preload () {
 
-            this.load.image('logo', 'resources/images/phaser.png');
+            this.load.image('logo', 'resources/images/road_crossing.png');
             this.load.image('block', 'resources/images/block.png');
             this.load.image('person', 'resources/images/boef.png');
             this.load.image('ball', 'resources/images/politie.png');
@@ -29,7 +25,7 @@
 
         function create () {
 
-            this.world.setBounds(0, 0, 1000, 1000);
+            this.world.setBounds(0, 0, 2000, 2000);
 
             //part 1 dragging logo
             var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
@@ -44,10 +40,6 @@
             this.game.stage.backgroundColor = 0x4488cc;
 
             // Create a bitmap texture for drawing lines
-            this.bitmap = this.game.add.bitmapData(this.world.width, this.world.height);
-            this.bitmap.context.fillStyle = 'rgb(255, 255, 255)';
-            this.bitmap.context.strokeStyle = 'rgb(255, 255, 255)';
-            this.game.add.image(0, 0, this.bitmap);
 
             // Build some walls. These will block line of sight.
             var NUMBER_OF_WALLS = 4;
@@ -104,13 +96,11 @@
                 Phaser.Keyboard.DOWN
             ]);
 
-            this.camera.follow(this.ball);
-            this.camera.deadzone = new Phaser.Rectangle(50, 50, 50, 50);
+            this.camera.follow(this.ball, Phaser.Camera.FOLLOW_TOPDOWN_TIGHT);
+            // this.camera.deadzone = new Phaser.Rectangle(50, 50, 50, 50);
             this.camera.focusOnXY(0, 0);
 
-            //Phaser.Camera.FOLLOW_LOCKON
-
-
+            game.input.addPointer();
         }
 
 
@@ -131,11 +121,9 @@
 
             // Move the ball to the pointer/touch location
             // part 3 ignore this
-            // this.ball.x = this.game.input.activePointer.x;
-            // this.ball.y = this.game.input.activePointer.y;
 
             // Clear the bitmap where we are drawing our lines
-            this.bitmap.context.clearRect(0, 0, this.world.width, this.world.height);
+            // this.bitmap.context.clearRect(0, 0, this.world.width, this.world.height);
 
             // Ray casting!
             // Test if each person can see the ball by casting a ray (a line) towards the ball.
@@ -150,7 +138,7 @@
                 var ray = new Phaser.Line(person.x, person.y, this.ball.x, this.ball.y);
 
                 // Test if any walls intersect the ray
-                var intersect = this.getWallIntersection(ray);
+                var intersect = getWallIntersection(this, ray);
 
                 if (intersect) {
                     // A wall is blocking this persons vision so change them back to their default color
@@ -158,15 +146,8 @@
                 } else {
                     // This person can see the ball so change their color
                     person.tint = 0xffaaaa;
-
-                    // Draw a line from the ball to the person
-                    this.bitmap.context.beginPath();
-                    this.bitmap.context.moveTo(person.x, person.y);
-                    this.bitmap.context.lineTo(this.ball.x, this.ball.y);
-                    this.bitmap.context.stroke();
                 }
             }, this);
-
 
 
             if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
@@ -185,16 +166,25 @@
                 this.ball.body.velocity.y = 0;
             }
 
-            // This just tells the engine it should update the texture cache
-            this.bitmap.dirty = true;
+            if (game.input.mousePointer.isDown) {
+                //  400 is the speed it will move towards the mouse
+                game.physics.arcade.moveToPointer(this.ball, 400);
+
+                //  if it's overlapping the mouse, don't move any more
+                if (Phaser.Rectangle.contains(this.ball.body, game.input.x, game.input.y)) {
+                    this.ball.body.velocity.setTo(0, 0);
+                }
+            } else {
+                this.ball.body.velocity.setTo(0, 0);
+            }
         }
 
-        function getWallIntersection(ray) {
+        function getWallIntersection(gameState, ray) {
             var distanceToWall = Number.POSITIVE_INFINITY;
             var closestIntersection = null;
 
             // For each of the walls...
-            this.walls.forEach(function(wall) {
+            gameState.walls.forEach(function(wall) {
                 // Create an array of lines that represent the four edges of each wall
                 var lines = [
                     new Phaser.Line(wall.x, wall.y, wall.x + wall.width, wall.y),
@@ -212,21 +202,19 @@
                     if (intersect) {
                         // Find the closest intersection
                         distance =
-                            this.game.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
+                            gameState.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
                         if (distance < distanceToWall) {
                             distanceToWall = distance;
                             closestIntersection = intersect;
                         }
                     }
                 }
-            }, this);
+            }, gameState);
 
             return closestIntersection;
         }
+
     };
-
-
-
 </script>
 
 </body>
