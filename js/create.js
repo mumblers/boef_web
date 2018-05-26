@@ -3,7 +3,7 @@ function create () {
     this.world.setBounds(0, 0, 2000, 2000);
 
     //part 1 dragging logo
-    var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'phaser');
+    var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'road_crossing');
     logo.anchor.setTo(0.5, 0.5);
 
     logo.inputEnabled = true;
