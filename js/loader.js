@@ -1,6 +1,29 @@
-var imgs = ['block', 'boef', 'camera_directional', 'camera_directional', 'camera_pole', 'camera_sphere',
-    'house_red', 'politie', 'road_crossing', 'road_crossing_t', 'road_horizontal', 'road_turn', 'road_vertical', 'goal',
-    'house_red_roof', 'house_silver_roof', 'house_grey_roof', 'house_silver', 'house_grey', 'car_green', 'road_dead_end'
+var imgs = [
+    'block',
+    'boef',
+
+    'camera_directional',
+    'camera_pole',
+    'camera_sphere',
+
+    'politie',
+    'car_green',
+    'car_red',
+
+    'road_crossing',
+    'road_crossing_t',
+    'road_horizontal',
+    'road_turn',
+    'road_vertical',
+    'road_dead_end',
+    'goal',
+
+    'house_red_roof',
+    'house_silver_roof',
+    'house_grey_roof',
+    'house_red',
+    'house_silver',
+    'house_grey'
 ];
 
 function loadLevel(){
