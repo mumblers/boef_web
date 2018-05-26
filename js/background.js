@@ -28,13 +28,13 @@ function renderBackground(bitmap, state){
     });
 
     level.tileset.forEach(function(tile){
-        if(tile.type === "house"){
-            bitmap.copy("house_red", 0, 0, level.scale, level.scale, (tile.x+0.5)*level.scale, (tile.y+0.5)*level.scale,
-                level.scale, level.scale, Math.radians(tile.rotation), 0.5, 0.5)
-        }else if(tile.type === "street"){
+        if(tile.type === "street"){
             var ding = getParts(roads, tile);
             bitmap.copy(ding.typ, 0, 0, level.scale, level.scale, (tile.x+0.5)*level.scale, (tile.y+0.5)*level.scale,
                 level.scale, level.scale, Math.radians(ding.ori), 0.5, 0.5)
+        }else {
+            bitmap.copy(tile.type, 0, 0, level.scale, level.scale, (tile.x+0.5)*level.scale, (tile.y+0.5)*level.scale,
+                level.scale, level.scale, Math.radians(tile.rotation), 0.5, 0.5)
         }
     });
 }
