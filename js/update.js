@@ -2,57 +2,60 @@ function update() {
 
     game.physics.arcade.collide(this.player, this.houses);
 
-    // Move the ball to the pointer/touch location
-    // part 3 ignore this
-
-    // Clear the bitmap where we are drawing our lines
-    // this.bitmap.context.clearRect(0, 0, this.world.width, this.world.height);
-
-    // Ray casting!
-    // Test if each person can see the ball by casting a ray (a line) towards the ball.
-    // If the ray intersects any walls before it intersects the ball then the wall
-    // is in the way.
-
+    // this.bitmap.clear();
     var play = this.player;
-    this.people.forEach(function(person) {
-        // Define a line that connects the person to the ball
-        // This isn't drawn on screen. This is just mathematical representation
-        // of a line to make our calculations easier. Unless you want to do a lot
-        // of math, make sure you choose an engine that has things like line intersection
-        // tests built in, like Phaser does.
-        var ray = new Phaser.Line(person.x, person.y, play.x, play.y);
+    this.cams.forEach(function(cam) {
+        var ray = new Phaser.Line(cam.x + (cam.width / 2), cam.y + (cam.height / 2), play.x, play.y);
 
         // Test if any walls intersect the ray
         var intersect = getWallIntersection(this, ray);
 
-        if (intersect) {
+        if (intersect.coll || ray.length > 500) {
             // A wall is blocking this persons vision so change them back to their default color
-            person.tint = 0xffffff;
+            cam.tint = 0xffffff;
         } else {
             // This person can see the ball so change their color
-            person.tint = 0xffaaaa;
+            cam.tint = 0xffaaaa;
+
+            // this.bitmap.context.beginPath();
+            // this.bitmap.context.moveTo(cam.x + (cam.width / 2), cam.y + (cam.height / 2));
+            // this.bitmap.context.lineTo(play.x, play.y);
+            // this.bitmap.context.stroke();
+            // this.bitmap.dirty = true;
         }
     }, this);
 
 
+    var moveX = false;
+    var moveY = false;
+
     if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
         this.player.body.velocity.x = -this.MAX_SPEED;
+        moveX = true;
     } else if (this.input.keyboard.isDown(Phaser.Keyboard.RIGHT)) {
         this.player.body.velocity.x = this.MAX_SPEED;
-    } else {
-        this.player.body.velocity.x = 0;
+        moveX = true;
     }
 
     if (this.input.keyboard.isDown(Phaser.Keyboard.UP)) {
         this.player.body.velocity.y = -this.MAX_SPEED;
+        moveY = true;
     } else if (this.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
         this.player.body.velocity.y = this.MAX_SPEED;
-    } else {
-        this.player.body.velocity.y = 0;
+        moveY = true;
     }
 
-    if (!moveToPoint(game.input.activePointer, this.player)) {
-        this.player.body.velocity.setTo(0, 0);
+    if (moveToPoint(game.input.activePointer, this.player)) {
+        moveX = true;
+        moveY = true;
+    }
+
+    if (!moveX) {
+        this.player.body.velocity.x = 0;
+    }
+
+    if (!moveY) {
+        this.player.body.velocity.y = 0;
     }
 }
 
@@ -76,15 +79,15 @@ function getWallIntersection(gameState, ray) {
     var closestIntersection = null;
 
     // For each of the walls...
-    gameState.walls.forEach(function(wall) {
+    gameState.houses.forEach(function(house) {
         // Create an array of lines that represent the four edges of each wall
         var lines = [
-            new Phaser.Line(wall.x, wall.y, wall.x + wall.width, wall.y),
-            new Phaser.Line(wall.x, wall.y, wall.x, wall.y + wall.height),
-            new Phaser.Line(wall.x + wall.width, wall.y,
-                wall.x + wall.width, wall.y + wall.height),
-            new Phaser.Line(wall.x, wall.y + wall.height,
-                wall.x + wall.width, wall.y + wall.height)
+            new Phaser.Line(house.x, house.y, house.x + house.width, house.y),
+            new Phaser.Line(house.x, house.y, house.x, house.y + house.height),
+            new Phaser.Line(house.x + house.width, house.y,
+                house.x + house.width, house.y + house.height),
+            new Phaser.Line(house.x, house.y + house.height,
+                house.x + house.width, house.y + house.height)
         ];
 
         // Test each of the edges in this wall against the ray.
@@ -94,7 +97,7 @@ function getWallIntersection(gameState, ray) {
             if (intersect) {
                 // Find the closest intersection
                 distance =
-                    gameState.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
+                    game.math.distance(ray.start.x, ray.start.y, intersect.x, intersect.y);
                 if (distance < distanceToWall) {
                     distanceToWall = distance;
                     closestIntersection = intersect;
@@ -103,5 +106,5 @@ function getWallIntersection(gameState, ray) {
         }
     }, gameState);
 
-    return closestIntersection;
+    return {coll: closestIntersection, d: distanceToWall};
 }
