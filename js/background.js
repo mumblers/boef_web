@@ -1,12 +1,9 @@
 
 function renderBackground(bitmap, state){
-    var w = level.width;
-    var h = level.height;
-
-    var roads = new Array(w);
-    for(var x = 0; x < w; x++){
-        roads[x] = [];
-        for(var y = 0; y < h; y++){
+    var roads = new Array(level.width);
+    for(var x = 0; x < level.width; x++){
+        roads[x] = new Array(level.height);
+        for(var y = 0; y < level.height; y++){
             roads[x][y] = null;
         }
     }

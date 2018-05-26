@@ -1,6 +1,6 @@
 function create () {
 
-    this.world.setBounds(0, 0, 2000, 2000);
+    this.world.setBounds(0, 0, level.width * level.scale, level.height * level.scale);
 
     // Set stage background color
     this.game.stage.backgroundColor = 0x4488cc;
@@ -13,7 +13,8 @@ function create () {
     this.cams = this.game.add.group();
     this.poles = this.game.add.group();
     this.goals = this.game.add.group();
-    renderCams(this.poles, this.cams, this.goals);
+    renderCams(this.poles, this.cams);
+    renderGoals(this.goals);
 
     // Build some walls. These will block line of sight.
 
