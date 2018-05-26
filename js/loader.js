@@ -1,5 +1,5 @@
 var imgs = ['block', 'boef', 'camera_directional', 'camera_pole_directional', 'camera_pole', 'camera_pole_sphere',
-    'house_red', 'phaser', 'politie', 'road_crossing', 'road_crossing_t', 'road_horizontal', 'road_trun', 'road_vertical'
+    'house_red', 'politie', 'road_crossing', 'road_crossing_t', 'road_horizontal', 'road_trun', 'road_vertical'
 ];
 
 function loadLevel(){

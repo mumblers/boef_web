@@ -1,4 +1,4 @@
-function renderBackground(bitmap){
+function renderBackground(bitmap, state){
     var w = level.width / SCALE;
     var h = level.height / SCALE;
 
@@ -16,9 +16,19 @@ function renderBackground(bitmap){
         }
     }
 
+    state.houses = game.add.group();
+    var houses = state.houses;
+
     level.tileset.forEach(function(tile){
         if(tile.type === "street"){
             roads[tile.gridX][tile.gridY] = tile;
+        }
+
+        if (tile.type === "house") {
+            this.sprite = game.add.sprite(tile.x, tile.y, null, null, houses);
+            game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+            this.sprite.body.setSize(SCALE, SCALE);
+            this.sprite.body.immovable = true;
         }
     });
 
