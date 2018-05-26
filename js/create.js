@@ -3,7 +3,7 @@ function create () {
     this.world.setBounds(0, 0, 2000, 2000);
 
     //part 1 dragging logo
-    var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
+    var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'phaser');
     logo.anchor.setTo(0.5, 0.5);
 
     logo.inputEnabled = true;
@@ -38,7 +38,7 @@ function create () {
         y = this.game.rnd.integerInRange(32, this.game.height - 32);
 
         // Create a person
-        var person = this.game.add.sprite(x, y, 'person');
+        var person = this.game.add.sprite(x, y, 'boef');
 
         // Set the pivot point of the person to the center of the texture
         person.anchor.setTo(0.5, 0.5);
@@ -48,7 +48,7 @@ function create () {
     }
 
     // Add the ball
-    this.ball = this.game.add.sprite(this.game.width/2, this.game.height/2, 'ball');
+    this.ball = this.game.add.sprite(this.game.width/2, this.game.height/2, 'politie');
 
     // Set the pivot point of the ball to the center of the texture
     this.ball.anchor.setTo(0.5, 0.5);
