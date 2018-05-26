@@ -1,7 +1,7 @@
 function update() {
 
     game.physics.arcade.collide(this.player, this.houses);
-    game.physics.arcade.collide(this.player, this.goals, finishGame);
+    game.physics.arcade.overlap(this.player, this.goals, finishGame);
 
     // this.bitmap.clear();
     var play = this.player;
@@ -17,6 +17,7 @@ function update() {
         } else {
             // This person can see the ball so change their color
             cam.tint = 0xffaaaa;
+            failGame();
 
         }
     }, this);
@@ -106,6 +107,10 @@ function getWallIntersection(gameState, ray) {
     return closestIntersection;
 }
 
-function finishGame(){
-    window.location.href = "result-ok.html"
+function finishGame() {
+    window.location.href = "result-ok.html";
+}
+
+function failGame() {
+    window.location.href = "result-jammer.html";
 }
