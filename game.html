@@ -13,13 +13,14 @@
     <script src="js/loader.js"></script>
     <script src="js/update.js"></script>
     <script src="js/background.js"></script>
+    <script src="js/render.js"></script>
 </head>
 <body style="margin: 0">
 
 <script type="text/javascript">
     window.onload = function() {
         game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '',
-            { preload: preload, create: create, update : update});
+            { preload: preload, create: create, update : update, render : render});
     };
 </script>
 
