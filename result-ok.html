@@ -36,14 +36,27 @@
         <div class="col" style="background-color: #f1f1f1; padding-top: 25px; padding-bottom: 25px">
             <h1 style="font-size: 7vw; text-align: center">CONGRATULATIONS</h1>
             <p style="font-size: 3vw; text-align: center">Your score is </p>
-            <h2 style="font-size: 15vw; text-align: center; color: green;" >6269742</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <h2 id="score" style="font-size: 15vw; text-align: center; color: green;" >Calculating ...</h2>
 
             <a class="btn btn-xl btn-secondary btn-block" href="index.html" role="button">Play again</a>
         </div>
     </div>
 
     <script>
+        window.onload = function() {
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, "\\$&");
+                var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, " "));
+            }
+
+            document.getElementById("score").innerText = getParameterByName("score");
+
+        };
         var confettiSettings = {
             target: "confetti-holder",
             "max":"500",
