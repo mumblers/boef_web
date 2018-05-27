@@ -1,61 +1,14 @@
-TOTAL_DETECTION_TIME = 120;
+TOTAL_DETECTION_TIME = 100;
 SHOW_TIME = 25;
+CAMERA_RANGE = 400;
 
-function update() {
-    this.time++;
-
-    game.physics.arcade.collide(this.player, this.houses);
-    game.physics.arcade.collide(this.player, this.goals, finishGame, null, this);
-
-    if (this.failed) {
-        failGame(this);
-        return;
-    } else if (this.detected) {
-        this.detectRender--;
-        if (this.detectRender <= 0) {
-            this.detected = false;
-            this.detectedText.visible = false;
-        }
-    }
-
-    let seen = false;
-    this.cams.forEach(function(cam) {
-        var ray = new Phaser.Line(cam.x + (cam.width / 2), cam.y + (cam.height / 2), this.player.x, this.player.y);
-
-        // Test if any walls intersect the ray
-        var intersect = getWallIntersection(this, ray);
-
-        if (intersect || ray.length > 500) {
-            cam.tint = 0xffffff;
-            if (cam.spotting > 0) {
-                cam.spotting--;
-            } else {
-                cam.hintCircle.visible = false;
-            }
-        } else {
-            cam.tint = 0xffaaaa;
-            cam.spotting = SHOW_TIME;
-            cam.hintCircle.visible = true;
-
-            if (!seen) {
-                if (this.detectedTime++ > TOTAL_DETECTION_TIME) {
-                    this.failed = true;
-                    this.showDeath = 20;
-                    this.dead.visible = true;
-                    this.player.body.velocity.x = 0;
-                    this.player.body.velocity.y = 0;
-                    return;
-                }
-                this.detected = true;
-                this.detectRender = SHOW_TIME;
-                this.detectedText.visible = true;
-                seen = true;
-            }
-        }
-    }, this);
-
+function updateMovement() {
     var moveX = false;
     var moveY = false;
+
+    if (this.failed) {
+        return;
+    }
 
     if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
         this.player.body.velocity.x = -this.MAX_SPEED;
@@ -87,6 +40,73 @@ function update() {
     }
 }
 
+function collisions() {
+    game.physics.arcade.collide(this.player, this.houses);
+    game.physics.arcade.collide(this.player, this.goals, finishGame, null, this);
+}
+
+function onDeath() {
+    this.failed = true;
+    this.showDeath = 20;
+    this.dead.visible = true;
+    this.player.body.velocity.x = 0;
+    this.player.body.velocity.y = 0;
+}
+
+function update() {
+    this.time++;
+
+    collisions.call(this);
+
+    if (this.failed) {
+        failGame(this);
+        return;
+    } else if (this.detected) {
+        this.detectRender--;
+        if (this.detectRender <= 0) {
+            this.detected = false;
+            this.detectedText.visible = false;
+        }
+    }
+
+    this.seen = false;
+    this.cams.forEach(checkCamVision, this);
+
+    updateMovement.call(this);
+
+}
+
+function checkCamVision(cam) {
+    var ray = new Phaser.Line(cam.x + (cam.width / 2), cam.y + (cam.height / 2), this.player.x, this.player.y);
+
+    // Test if any walls intersect the ray
+    var intersect = getWallIntersection(this, ray);
+
+    if (intersect || ray.length > CAMERA_RANGE) {
+        cam.tint = 0xffffff;
+        if (cam.spotting > 0) {
+            cam.spotting--;
+        } else {
+            cam.hintCircle.visible = false;
+        }
+    } else {
+        cam.tint = 0xffaaaa;
+        cam.spotting = SHOW_TIME;
+        cam.hintCircle.visible = true;
+
+        if (!this.seen) {
+            if (this.detectedTime++ > TOTAL_DETECTION_TIME) {
+                onDeath.call(this);
+                return;
+            } else {
+                this.detected = true;
+                this.detectRender = SHOW_TIME;
+                this.detectedText.visible = true;
+                this.seen = true;
+            }
+        }
+    }
+}
 
 function moveToPoint(pointer, player) {
     if (pointer.isDown && game.math.distance(player.x, player.y, pointer.worldX, pointer.worldY) > 5) {
@@ -145,6 +165,13 @@ function calcScore(state) {
     return Math.max(0, (10000 - state.time) * 2 - (state.detectedTime * 50));
 }
 
+function sendScore(calcScore1, username) {
+    var request = new XMLHttpRequest();
+    request.open('POST', 'http://dohdatasciencevm6.westeurope.cloudapp.azure.com/api/maps/Oceans11/scores', true);
+    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    request.send("score=" + calcScore1 + "&username=" + username);
+}
+
 function finishGame() {
     if (this.done) {
         return;
@@ -154,10 +181,7 @@ function finishGame() {
 
     let username = prompt("Username?");
 
-    var request = new XMLHttpRequest();
-    request.open('POST', 'http://dohdatasciencevm6.westeurope.cloudapp.azure.com/api/maps/Oceans11/scores', true);
-    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    request.send("score=" + calcScore1 + "&username=" + username);
+    sendScore(calcScore1, username);
     window.location.href = "result-ok.html?score=" + calcScore1;
     this.done = true;
 }
