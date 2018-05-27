@@ -152,6 +152,12 @@ function finishGame() {
     let calcScore1 = calcScore(this);
     console.log(calcScore1);
 
+    let username = prompt("Username?");
+
+    var request = new XMLHttpRequest();
+    request.open('POST', 'http://dohdatasciencevm6.westeurope.cloudapp.azure.com/api/maps/Oceans11/scores', true);
+    request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    request.send("score=" + calcScore1 + "&username=" + username);
     window.location.href = "result-ok.html?score=" + calcScore1;
     this.done = true;
 }

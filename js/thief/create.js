@@ -20,7 +20,7 @@ function create () {
     // Place some people in random locations
     // Add the ball
 
-    this.player = this.game.add.sprite(this.game.width/2, this.game.height/2, 'boef');
+    this.player = this.game.add.sprite(level.startX * level.scale + level.scale / 2, level.startY * level.scale + level.scale / 2, 'boef');
     this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
 
     this.player.body.collideWorldBounds = true;
