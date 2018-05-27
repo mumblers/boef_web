@@ -65,7 +65,7 @@ function update() {
         }
     }
 
-    let seen = false;
+    this.seen = false;
     this.cams.forEach(checkCamVision, this);
 
     updateMovement.call(this);
@@ -90,7 +90,7 @@ function checkCamVision(cam) {
         cam.spotting = SHOW_TIME;
         cam.hintCircle.visible = true;
 
-        if (!seen) {
+        if (!this.seen) {
             if (this.detectedTime++ > TOTAL_DETECTION_TIME) {
                 onDeath.call(this);
                 return;
@@ -98,7 +98,7 @@ function checkCamVision(cam) {
                 this.detected = true;
                 this.detectRender = SHOW_TIME;
                 this.detectedText.visible = true;
-                seen = true;
+                this.seen = true;
             }
         }
     }
