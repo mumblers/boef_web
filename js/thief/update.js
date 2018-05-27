@@ -6,6 +6,10 @@ function updateMovement() {
     var moveX = false;
     var moveY = false;
 
+    if (this.failed) {
+        return;
+    }
+
     if (this.input.keyboard.isDown(Phaser.Keyboard.LEFT)) {
         this.player.body.velocity.x = -this.MAX_SPEED;
         moveX = true;
