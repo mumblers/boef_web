@@ -17,6 +17,7 @@ var imgs = [
     'road_vertical',
     'road_dead_end',
     'goal',
+    'park',
 
     'house_red_roof',
     'house_silver_roof',
