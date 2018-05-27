@@ -1,5 +1,6 @@
-TOTAL_DETECTION_TIME = 120;
+TOTAL_DETECTION_TIME = 100;
 SHOW_TIME = 25;
+CAMERA_RANGE = 400;
 
 function updateMovement() {
     var moveX = false;
@@ -77,7 +78,7 @@ function checkCamVision(cam) {
     // Test if any walls intersect the ray
     var intersect = getWallIntersection(this, ray);
 
-    if (intersect || ray.length > 500) {
+    if (intersect || ray.length > CAMERA_RANGE) {
         cam.tint = 0xffffff;
         if (cam.spotting > 0) {
             cam.spotting--;
