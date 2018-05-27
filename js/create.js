@@ -14,8 +14,8 @@ function create () {
 
     this.poles = this.game.add.group();
     this.goals = this.game.add.group();
-    renderCams(this.poles, this.cams);
     renderGoals(this.goals);
+    renderCams(this.poles, this.cams);
     // Build some walls. These will block line of sight.
 
     // Place some people in random locations
