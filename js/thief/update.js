@@ -1,11 +1,24 @@
-TOTAL_DETECTION_TIME = 60;
+TOTAL_DETECTION_TIME = 120;
+SHOW_TIME = 25;
 
 function update() {
+    this.time++;
 
     game.physics.arcade.collide(this.player, this.houses);
-    game.physics.arcade.overlap(this.player, this.goals, finishGame);
+    game.physics.arcade.collide(this.player, this.goals, finishGame, null, this);
 
-    // this.bitmap.clear();
+    if (this.failed) {
+        failGame(this);
+        return;
+    } else if (this.detected) {
+        this.detectRender--;
+        if (this.detectRender <= 0) {
+            this.detected = false;
+            this.detectedText.visible = false;
+        }
+    }
+
+    let seen = false;
     this.cams.forEach(function(cam) {
         var ray = new Phaser.Line(cam.x + (cam.width / 2), cam.y + (cam.height / 2), this.player.x, this.player.y);
 
@@ -13,21 +26,33 @@ function update() {
         var intersect = getWallIntersection(this, ray);
 
         if (intersect || ray.length > 500) {
-            // A wall is blocking this persons vision so change them back to their default color
             cam.tint = 0xffffff;
-        } else {
-            // This person can see the ball so change their color
-            cam.tint = 0xffaaaa;
-            //todo maakt het uit of je door meedere cameras wordt gezien?
-            if (this.detectedTime++ > TOTAL_DETECTION_TIME) {
-                // failGame();
+            if (cam.spotting > 0) {
+                cam.spotting--;
+            } else {
+                cam.hintCircle.visible = false;
             }
-            this.detected = true;
-            this.detectRender = 20;
-            this.detectedText.visible = true;
+        } else {
+            cam.tint = 0xffaaaa;
+            cam.spotting = SHOW_TIME;
+            cam.hintCircle.visible = true;
+
+            if (!seen) {
+                if (this.detectedTime++ > TOTAL_DETECTION_TIME) {
+                    this.failed = true;
+                    this.showDeath = 20;
+                    this.dead.visible = true;
+                    this.player.body.velocity.x = 0;
+                    this.player.body.velocity.y = 0;
+                    return;
+                }
+                this.detected = true;
+                this.detectRender = SHOW_TIME;
+                this.detectedText.visible = true;
+                seen = true;
+            }
         }
     }, this);
-
 
     var moveX = false;
     var moveY = false;
@@ -64,7 +89,7 @@ function update() {
 
 
 function moveToPoint(pointer, player) {
-    if (pointer.isDown && game.math.distance(player.x, player.y, pointer.worldX, pointer.worldY) > 20) {
+    if (pointer.isDown && game.math.distance(player.x, player.y, pointer.worldX, pointer.worldY) > 5) {
         //  400 is the speed it will move towards the mouse
         game.physics.arcade.moveToPointer(player, game.MOUSE_MOVE_SPEED, pointer);
 
@@ -113,10 +138,30 @@ function getWallIntersection(gameState, ray) {
     return closestIntersection;
 }
 
-function finishGame() {
-    window.location.href = "result-ok.html";
+function calcScore(state) {
+    // console.log(state.time);
+    // console.log(state.detectedTime);
+    // console.log((10000 - state.time) * 2 - (state.detectedTime * 50));
+    return Math.max(0, (10000 - state.time) * 2 - (state.detectedTime * 50));
 }
 
-function failGame() {
-    window.location.href = "result-jammer.html";
+function finishGame() {
+    if (this.done) {
+        return;
+    }
+    let calcScore1 = calcScore(this);
+    console.log(calcScore1);
+
+    window.location.href = "result-ok.html?score=" + calcScore1;
+    this.done = true;
+}
+
+function failGame(state) {
+    if (state.done) {
+        return;
+    }
+    if (state.showDeath-- === 0) {
+        window.location.href = "result-jammer.html";
+        this.done = true;
+    }
 }

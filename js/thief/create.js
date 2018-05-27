@@ -1,5 +1,4 @@
 function create () {
-
     this.world.setBounds(0, 0, level.width * level.scale, level.height * level.scale);
 
     // Set stage background color
@@ -57,4 +56,13 @@ function create () {
     this.player.addChild(this.detectedText);
     this.detectedText.x = this.player.width / 2 - this.detectedText.width/ 2;
     this.detectedText.visible = false;
+
+    this.score = 0;
+    this.time = 0;
+    this.done = false;
+
+    this.dead = game.add.text(0, 0, "You've been caught", { font: "32px Arial", fill: "#ff0000", align: "center" });
+    this.dead.fixedToCamera = true;
+    this.dead.cameraOffset.setTo(game.width / 2, game.height / 2);
+    this.dead.visible = false;
 }
