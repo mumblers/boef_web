@@ -48,10 +48,7 @@
             <h4>Most recent highscores</h4>
             <ul id="lastScores">
                 <li>
-                    512
-                </li>
-                <li>
-                    42
+                    Loading
                 </li>
             </ul>
         </div>
@@ -59,10 +56,7 @@
             <h4>All time highscores!</h4>
             <ul id="highScores">
                 <li>
-                    512
-                </li>
-                <li>
-                    42
+                    Loading
                 </li>
             </ul>
         </div>
@@ -87,7 +81,7 @@
 
             let highScoresUL = document.getElementById('highScores');
             highScoresUL.innerHTML = '';
-            for (var i = 0; i < 5; i++) {
+            for (var i = 0; i < Math.min(5, sortedHighScores.length); i++) {
                 let score = sortedHighScores[i];
 
                 highScoresUL.innerHTML += '<li><strong>' + score.username + '</strong>: ' + score.score + '</li>';
@@ -99,7 +93,7 @@
 
             let lastScoresUL = document.getElementById('lastScores');
             lastScoresUL.innerHTML = '';
-            for (var i = 0; i < 5; i++) {
+            for (var i = 0; i < Math.min(5, sortedLastScores.length); i++) {
                 let score = sortedLastScores[i];
 
                 lastScoresUL.innerHTML += '<li><strong>' + score.username + '</strong>: ' + score.score + '</li>';
