@@ -11,14 +11,21 @@
         body {
             background-color: #f1f1f1;
         }
+
         .btn-xl {
             padding: 1rem 2rem;
             font-size: 1.5rem;
             line-height: 2;
             border-radius: .6rem;
         }
-        .mt50 {margin-top: 50px;}
-        .mb50 {margin-bottom: 50px;}
+
+        .mt50 {
+            margin-top: 50px;
+        }
+
+        .mb50 {
+            margin-bottom: 50px;
+        }
     </style>
 
     <title>Highscores</title>
@@ -33,13 +40,13 @@
     </div>
     <div class="row mt50">
         <div class="col-md-12">
-            <a class="btn btn-success btn-primary btn-xl btn-block" href="index.html"  role="button">Back to home</a>
+            <a class="btn btn-success btn-primary btn-xl btn-block" href="index.html" role="button">Back to home</a>
         </div>
-        </div>
-        <div class="row mt50">
+    </div>
+    <div class="row mt50">
         <div class="col-md-6">
             <h4>Most recent highscores</h4>
-            <ul>
+            <ul id="lastScores">
                 <li>
                     512
                 </li>
@@ -50,7 +57,7 @@
         </div>
         <div class="col-md-6">
             <h4>All time highscores!</h4>
-            <ul>
+            <ul id="highScores">
                 <li>
                     512
                 </li>
@@ -61,5 +68,50 @@
         </div>
     </div>
 </div>
+<script>
+    function updateScores() {
+        let request = new XMLHttpRequest();
+        request.open('GET', 'http://dohdatasciencevm6.westeurope.cloudapp.azure.com/api/maps/Oceans11/scores', false);
+        request.send(null);
+
+        if (request.status === 200) {
+            let scores = JSON.parse(request.responseText);
+
+            console.log(scores);
+
+            var sortedHighScores = scores.scores.sort(function (a, b) {
+                return b.score - a.score
+            });
+
+            console.log(sortedHighScores);
+
+            let highScoresUL = document.getElementById('highScores');
+            highScoresUL.innerHTML = '';
+            for (var i = 0; i < 5; i++) {
+                let score = sortedHighScores[i];
+
+                highScoresUL.innerHTML += '<li><strong>' + score.username + '</strong>: ' + score.score + '</li>';
+            }
+
+            var sortedLastScores = scores.scores.sort(function (a, b) {
+                return Date.parse(b.datetime) - Date.parse(a.datetime)
+            });
+
+            let lastScoresUL = document.getElementById('lastScores');
+            lastScoresUL.innerHTML = '';
+            for (var i = 0; i < 5; i++) {
+                let score = sortedLastScores[i];
+
+                lastScoresUL.innerHTML += '<li><strong>' + score.username + '</strong>: ' + score.score + '</li>';
+            }
+
+        }
+        else
+            alert(request.responseText);
+    }
+
+    updateScores();
+    setInterval(updateScores, 1000);
+</script>
 </body>
 </html>
