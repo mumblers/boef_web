@@ -10,6 +10,8 @@ function renderCams(poles, cams){
             graphics.drawCircle(cam.x + cam.width / 2, cam.y + cam.height / 2, 40);
             graphics.visible = false;
             cam.hintCircle = graphics;
+        } else {
+            game.add.image(object.x, object.y, object.type, 0, poles);
         }
     });
 }
