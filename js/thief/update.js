@@ -1,18 +1,22 @@
-TOTAL_DETECTION_TIME = 240;
+TOTAL_DETECTION_TIME = 120;
+SHOW_TIME = 25;
 
 function update() {
     this.time++;
 
-    if (this.detected) {
+    game.physics.arcade.collide(this.player, this.houses);
+    game.physics.arcade.collide(this.player, this.goals, finishGame, null, this);
+
+    if (this.failed) {
+        failGame(this);
+        return;
+    } else if (this.detected) {
         this.detectRender--;
         if (this.detectRender <= 0) {
             this.detected = false;
             this.detectedText.visible = false;
         }
     }
-
-    game.physics.arcade.collide(this.player, this.houses);
-    game.physics.arcade.collide(this.player, this.goals, finishGame, null, this);
 
     let seen = false;
     this.cams.forEach(function(cam) {
@@ -30,23 +34,24 @@ function update() {
             }
         } else {
             cam.tint = 0xffaaaa;
-            cam.spotting = 20;
+            cam.spotting = SHOW_TIME;
             cam.hintCircle.visible = true;
 
             if (!seen) {
                 if (this.detectedTime++ > TOTAL_DETECTION_TIME) {
-                    failGame(this);
+                    this.failed = true;
+                    this.showDeath = 20;
+                    this.dead.visible = true;
+                    this.player.body.velocity.x = 0;
+                    this.player.body.velocity.y = 0;
+                    return;
                 }
                 this.detected = true;
-                this.detectRender = 20;
+                this.detectRender = SHOW_TIME;
                 this.detectedText.visible = true;
                 seen = true;
             }
         }
-    }, this);
-
-    this.cams.forEach(function (camera) {
-
     }, this);
 
     var moveX = false;
@@ -84,7 +89,7 @@ function update() {
 
 
 function moveToPoint(pointer, player) {
-    if (pointer.isDown && game.math.distance(player.x, player.y, pointer.worldX, pointer.worldY) > 20) {
+    if (pointer.isDown && game.math.distance(player.x, player.y, pointer.worldX, pointer.worldY) > 5) {
         //  400 is the speed it will move towards the mouse
         game.physics.arcade.moveToPointer(player, game.MOUSE_MOVE_SPEED, pointer);
 
@@ -151,7 +156,7 @@ function finishGame() {
 }
 
 function failGame(state) {
-    if (state.done) {
+    if (state.done || state.showDeath-- > 0) {
         return;
     }
     window.location.href = "result-jammer.html";
