@@ -9,10 +9,10 @@ function create () {
 
     renderBackground(this.bitmap, this);
     this.game.add.image(0, 0, this.bitmap);
-    this.cams = this.game.add.group();
 
-    this.poles = this.game.add.group();
     this.goals = this.game.add.group();
+    this.poles = this.game.add.group();
+    this.cams = this.game.add.group();
     renderGoals(this.goals);
     renderCams(this.poles, this.cams);
     // Build some walls. These will block line of sight.
