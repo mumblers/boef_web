@@ -167,7 +167,7 @@ function calcScore(state) {
 
 function sendScore(calcScore1, username) {
     var request = new XMLHttpRequest();
-    request.open('POST', 'http://dohdatasciencevm6.westeurope.cloudapp.azure.com/api/maps/Oceans11/scores', true);
+    request.open('POST', 'http://dohdatasciencevm6.westeurope.cloudapp.azure.com/api/maps/Oceans11/scores', false);
     request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
     request.send("score=" + calcScore1 + "&username=" + username);
 }
