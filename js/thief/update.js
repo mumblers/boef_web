@@ -151,14 +151,17 @@ function finishGame() {
     }
     let calcScore1 = calcScore(this);
     console.log(calcScore1);
+
     window.location.href = "result-ok.html?score=" + calcScore1;
     this.done = true;
 }
 
 function failGame(state) {
-    if (state.done || state.showDeath-- > 0) {
+    if (state.done) {
         return;
     }
-    window.location.href = "result-jammer.html";
-    this.done = true;
+    if (state.showDeath-- === 0) {
+        window.location.href = "result-jammer.html";
+        this.done = true;
+    }
 }

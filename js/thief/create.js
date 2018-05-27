@@ -59,6 +59,7 @@ function create () {
 
     this.score = 0;
     this.time = 0;
+    this.done = false;
 
     this.dead = game.add.text(0, 0, "You've been caught", { font: "32px Arial", fill: "#ff0000", align: "center" });
     this.dead.fixedToCamera = true;
