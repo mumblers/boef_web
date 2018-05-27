@@ -6,8 +6,12 @@ function render() {
         this.detectRender--;
         if (this.detectRender <= 0) {
             this.detected = false;
+            this.detectedText.visible = false;
+        } else {
+            game.debug.text(('DETECTED' + this.detectedTime), 2, 42, "#00ff00");
+            // this.detectedText.x = this.player.x + this.player.width / 2;
+            // this.detectedText.y = this.player.y - 30;
         }
-        game.debug.text(('DETECTED' + this.detectedTime), 2, 42, "#00ff00");
     }
 }
 function playerX(player) {

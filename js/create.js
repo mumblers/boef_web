@@ -35,7 +35,7 @@ function create () {
         Phaser.Keyboard.DOWN
     ]);
 
-    this.camera.follow(this.player, Phaser.Camera.FOLLOW_TOPDOWN_TIGHT);
+    this.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON);
     // this.camera.deadzone = new Phaser.Rectangle(50, 50, 50, 50);
     this.camera.focusOnXY(0, 0);
 
@@ -51,4 +51,9 @@ function create () {
     this.detected = false;
     this.detectedTime = 0;
     this.detectRender = 0;
+
+    this.detectedText = game.add.text(0, -50, "!", {fontSize: 50, fill: "#ff0000"});
+    this.player.addChild(this.detectedText);
+    this.detectedText.x = this.player.width / 2 - this.detectedText.width/ 2;
+    this.detectedText.visible = false;
 }

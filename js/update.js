@@ -19,10 +19,11 @@ function update() {
             // This person can see the ball so change their color
             cam.tint = 0xffaaaa;
             if (this.detectedTime++ > TOTAL_DETECTION_TIME) {
-                failGame();
+                // failGame();
             }
             this.detected = true;
             this.detectRender = 20;
+            this.detectedText.visible = true;
         }
     }, this);
 
