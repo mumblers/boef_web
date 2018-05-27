@@ -6,7 +6,8 @@ var imgs = [
     'camera_pole',
     'camera_sphere',
 
-    'politie',
+    'car_police',
+    'car_postnl',
     'car_green',
     'car_red',
 
