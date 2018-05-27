@@ -18,6 +18,7 @@ function update() {
         } else {
             // This person can see the ball so change their color
             cam.tint = 0xffaaaa;
+            //todo maakt het uit of je door meedere cameras wordt gezien?
             if (this.detectedTime++ > TOTAL_DETECTION_TIME) {
                 // failGame();
             }

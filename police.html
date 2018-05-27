@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Bad guy run</title>
+    <script src="//cdn.jsdelivr.net/phaser/2.6.2/phaser.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script>
+        var game;
+        var level;
+
+        Math.radians = function(degrees) {
+            return degrees * Math.PI / 180;
+        };
+
+        // Converts from radians to degrees.
+        Math.degrees = function(radians) {
+            return radians * 180 / Math.PI;
+        };
+    </script>
+
+    <script src="js/loader.js"></script>
+    <script src="js/background.js"></script>
+    <script src="js/placing/create.js"></script>
+    <script src="js/placing/render.js"></script>
+    <script src="js/placing/update.js"></script>
+</head>
+<body style="margin: 0">
+
+<script type="text/javascript">
+    window.onload = function() {
+
+        level = loadLevel();
+        game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.AUTO, '',
+            { preload: preload, create: create, update : update, render : render});
+    };
+</script>
+
+</body>
+</html>

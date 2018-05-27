@@ -7,24 +7,24 @@ function create () {
 
     // Create a bitmap texture for drawing lines
     this.bitmap = this.game.add.bitmapData(this.world.width, this.world.height);
-
     renderBackground(this.bitmap, this);
     this.game.add.image(0, 0, this.bitmap);
-    this.cams = this.game.add.group();
 
-    this.poles = this.game.add.group();
-    this.goals = this.game.add.group();
-    renderCams(this.poles, this.cams);
-    renderGoals(this.goals);
+
     // Build some walls. These will block line of sight.
 
     // Place some people in random locations
     // Add the ball
+    // this.player = this.game.add.sprite(this.game.width/2, this.game.height/2, null);
+    // this.player.visible = false;
+    //
+    // this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
+    // this.player.body.collideWorldBounds = true;
 
-    this.player = this.game.add.sprite(this.game.width/2, this.game.height/2, 'boef');
-    this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
+    // Define movement constants
+    this.MAX_SPEED = 500; // pixels/second
 
-    this.player.body.collideWorldBounds = true;
+
     // Define movement constants
     this.MAX_SPEED = 500; // pixels/second
 
@@ -35,10 +35,10 @@ function create () {
         Phaser.Keyboard.DOWN
     ]);
 
-    this.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON);
-
+    // this.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON);
     // this.camera.deadzone = new Phaser.Rectangle(50, 50, 50, 50);
     this.camera.focusOnXY(0, 0);
+
     game.input.addPointer();
 
     game.MOUSE_MOVE_SPEED = 250;
@@ -48,13 +48,21 @@ function create () {
 
     game.time.advancedTiming = true;
 
-    this.detected = false;
+    var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'road_crossing');
+    logo.anchor.setTo(0.5, 0.5);
 
-    this.detectedTime = 0;
-    this.detectRender = 0;
-    this.detectedText = game.add.text(0, -50, "!", {fontSize: 50, fill: "#ff0000"});
+    logo.inputEnabled = true;
+    logo.input.enableDrag();
 
-    this.player.addChild(this.detectedText);
-    this.detectedText.x = this.player.width / 2 - this.detectedText.width/ 2;
-    this.detectedText.visible = false;
+    this.isDragging = false;
+    logo.events.onDragStart.add(onDragStart, this);
+    logo.events.onDragStop.add(onDragStop, this);
+}
+
+function onDragStart() {
+    this.isDragging = true;
+}
+
+function onDragStop() {
+    this.isDragging = false;
 }
