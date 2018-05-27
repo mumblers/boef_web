@@ -1,12 +1,13 @@
+TOTAL_DETECTION_TIME = 60;
+
 function update() {
 
     game.physics.arcade.collide(this.player, this.houses);
     game.physics.arcade.overlap(this.player, this.goals, finishGame);
 
     // this.bitmap.clear();
-    var play = this.player;
     this.cams.forEach(function(cam) {
-        var ray = new Phaser.Line(cam.x + (cam.width / 2), cam.y + (cam.height / 2), play.x, play.y);
+        var ray = new Phaser.Line(cam.x + (cam.width / 2), cam.y + (cam.height / 2), this.player.x, this.player.y);
 
         // Test if any walls intersect the ray
         var intersect = getWallIntersection(this, ray);
@@ -17,8 +18,11 @@ function update() {
         } else {
             // This person can see the ball so change their color
             cam.tint = 0xffaaaa;
-            failGame();
-
+            if (this.detectedTime++ > TOTAL_DETECTION_TIME) {
+                failGame();
+            }
+            this.detected = true;
+            this.detectRender = 20;
         }
     }, this);
 

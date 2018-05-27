@@ -47,4 +47,8 @@ function create () {
     game.input.MAX_POINTERS = 1;
 
     game.time.advancedTiming = true;
+
+    this.detected = false;
+    this.detectedTime = 0;
+    this.detectRender = 0;
 }
